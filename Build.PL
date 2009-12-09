@@ -2,7 +2,7 @@ use 5.010;
 use strict;
 use warnings FATAL => 'all';
 
-use Module::Build '0.35_02';
+use Module::Build 0.35_02;
 my $build = Module::Build->new(
     license            => 'mit',
     module_name        => 'Alien::BWIPP',
