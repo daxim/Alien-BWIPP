@@ -2,6 +2,10 @@
 
 =head1 Revision history for Alien-BWIPP
 
+=head2 0.002  2009-12-10
+
+small Build fix to better enforce the required L<Module::Build> version
+
 =head2 0.001  2009-12-07
 
 Initial release.
