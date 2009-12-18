@@ -4,6 +4,10 @@
 
 Changes - Revision history for Alien-BWIPP
 
+=head2 0.004  2009-12-11
+
+increase required Module::Build version
+
 =head2 0.003  2009-12-11
 
 work-around for Perl 5.10.0
