@@ -240,7 +240,7 @@ C<Alien::BWIPP> requires no configuration files or environment variables.
 
 =head2 Configure time
 
-Perl 5.10, L<Module::Build> >= 0.35_02
+Perl 5.10, L<Module::Build> >= 0.35_14
 
 =head2 Run time
 

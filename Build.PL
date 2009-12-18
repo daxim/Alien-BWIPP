@@ -2,7 +2,7 @@ use 5.010;
 use strict;
 use warnings FATAL => 'all';
 
-use Module::Build 0.35_02;
+use Module::Build 0.35_14;
 my $build = Module::Build->new(
     license            => 'mit',
     module_name        => 'Alien::BWIPP',
@@ -14,7 +14,7 @@ my $build = Module::Build->new(
     },
     configure_requires => {
         'perl'          => '5.010',
-        'Module::Build' => '0.35_02',
+        'Module::Build' => '0.35_14',
     },
     build_requires => {
         'Test::More' => 0,
@@ -29,6 +29,7 @@ my $build = Module::Build->new(
         'MooseX::ClassAttribute' => '0.10',
         'Storable'               => '2.21',
     },
+    share_dir => 'share',
 );
 $build->create_build_script;
 
