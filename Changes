@@ -4,6 +4,11 @@
 
 Changes - Revision history for Alien-BWIPP
 
+=head2 0.005  2010-01-13
+
+0.003 broke 5.10.1, change work-around to work on both 5.10.0 and 5.10.1
+(thanks, Jozef Kutej)
+
 =head2 0.004  2009-12-11
 
 increase required Module::Build version
