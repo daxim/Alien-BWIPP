@@ -51,7 +51,7 @@ sub _build__chunks {
                     $block_name = $LAST_PAREN_MATCH{name} if $LAST_PAREN_MATCH{name};
                 }
                 when (/\A % [ ] --
-                    (?<feature_name>\w+) :? [ ]
+                    (?<feature_name>\w+) :? [ ]?
                     (?<feature_value>.*?)
                     (?:--)? \n \z/msx
                 ) {
