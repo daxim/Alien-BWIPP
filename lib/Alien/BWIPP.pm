@@ -36,66 +36,32 @@ sub _build__chunks {
     my %chunks;
     {
         while (defined(my $line = $self->barcode_source_handle->getline)) {
-            state ($block_type, $block_name);
-            state $in_begin = '';
-            $in_begin = $line if $in_begin;
-# $in_begin is a work-around because the flip..flop operator does not work
-# correctly in given/when under 5.10.0. This has been fixed for 5.10.1.
+            state $block_type = 'HEADER';
+            state $block_name;
             given ($line) {
+                when (/\A% Barcode Writer in Pure PostScript - Version/) {
+                    $block_name = 'LICENCE';
+                    continue;
+                }
+                when (/\A% --BEGIN PREAMBLE--/) {
+                    $block_name = 'PREAMBLE';
+                }
                 when (/\A %[ ]--BEGIN[ ](?<type>(?:RENDER|ENCOD)ER)[ ](?<name>\w+)--/msx) {
-                    $in_begin = !!1;
                     $block_type = $LAST_PAREN_MATCH{type} if $LAST_PAREN_MATCH{type};
                     $block_name = $LAST_PAREN_MATCH{name} if $LAST_PAREN_MATCH{name};
-                }
-                when (/\A %[ ]--END  [ ]        (?:RENDER|ENCOD)ER/msx) {
-                    $in_begin = '';
-                }
-                when ($in_begin) {
-                    $chunks{$block_type}{$block_name}{post_script_source_code} .= $line;
-                    continue;
                 }
                 when (/\A % [ ] --
                     (?<feature_name>\w+) :? [ ]
                     (?<feature_value>.*?)
                     (?:--)? \n \z/msx
                 ) {
-                    next if $LAST_PAREN_MATCH{feature_name} ~~ [qw(BEGIN END)];
-                    $chunks{ENCODER}{$block_name}{$LAST_PAREN_MATCH{feature_name}}
-                      = $LAST_PAREN_MATCH{feature_value};
-                }
-                when (/\A [ ]{20,23}
-                    (?<smallest_symbol_version> \d{1,4} (?: [ ]{2,4} \d{2,4} ){9} )
-                        [ ]{3} % [ ] [123]? 1-
-                    (?<quality> [LMQH] )
-                        [ ]{1,2} - [ ] [1234] 0-
-                    \g{quality} \n \z/msx
-                ) {
-                    push @{$chunks{ENCODER}{qrcode}{smallest_symbol_version}{$LAST_PAREN_MATCH{quality}}},
-                      split q{ }, $LAST_PAREN_MATCH{smallest_symbol_version};
-                }
-                when (
-                    / \A [ ]{8} [[] [ ] [(]
-                    (?<format> (?:micro|full) )
-                        [)] [ ]{2,3} [(]
-                    (?<vers> (?:[56789]|M[1234]|1\d?|2\d?|3\d?|40?) )
-                        [)] [ ]{2,4}
-                    (?<size> \d\d\d? )
-                        [ ]{2}
-                    (?<align> \d\d [ ] \d\d )
-                        [ ]{2,5}
-                    (?<modules> \d{2,5} )
-                        [ ]{2} [[] [ ]{1,3}
-                    (?<error_codewords> \d{1,3} [ ]{1,4} \d{1,4} [ ]{1,3} \d{1,4} [ ]{1,3} \d{1,4} )
-                        [ ] []] [ ]{2} [[] [ ]{1,2}
-                    (?<error_correction_blocks> \d\d? [ ]{1,2} \d\d? (?: [ ]{1,2} (?:-1|\d\d?) ){6} )
-                    [ ] []] [ ] []] \n \z/msx
-                ) {
-                    my %metrics = %LAST_PAREN_MATCH;
-                    for my $section (qw(error_codewords error_correction_blocks)) {
-                        $metrics{$section} = [split q{ }, $metrics{$section}];
+                    unless ($LAST_PAREN_MATCH{feature_name} ~~ [qw(BEGIN END)]) {
+                        $chunks{ENCODER}{$block_name}{$LAST_PAREN_MATCH{feature_name}}
+                          = $LAST_PAREN_MATCH{feature_value};
                     }
-                    my $version = delete $metrics{vers};
-                    $chunks{ENCODER}{qrcode}{metrics}{$version} = \%metrics;
+                }
+                default {
+                    $chunks{$block_type}{$block_name}{post_script_source_code} .= $line if $block_name;
                 }
             }
         }
@@ -113,7 +79,8 @@ sub create_classes {
     my @meta_classes;
     my %chunks = %{$self->_chunks};
     for my $encoder (@{$self->_encoders}) {
-        my $prepended;
+        my $prepended = $chunks{HEADER}{LICENCE}{post_script_source_code}
+          . $chunks{HEADER}{PREAMBLE}{post_script_source_code};
         for my $renderer (split q{ }, $chunks{ENCODER}{$encoder}{RNDR}) {
             $prepended .= $chunks{RENDERER}{$renderer}{post_script_source_code};
         }
@@ -154,7 +121,7 @@ Alien::BWIPP - Barcode Writer in Pure PostScript
 =head1 VERSION
 
 This document describes C<Alien::BWIPP> version C<0.005>. It is based on
-I<Barcode Writer in Pure PostScript> version C<2009-11-15>.
+I<Barcode Writer in Pure PostScript> version C<2010-06-20>.
 
 
 =head1 SYNOPSIS
@@ -291,9 +258,9 @@ See file F<AUTHORS>.
 
 =head2 F<barcode.ps>
 
-Barcode Writer in Pure PostScript - Version 2009-11-15
+Barcode Writer in Pure PostScript - Version 2010-06-20
 
-Copyright © 2004-2009 Terry Burton C<< <tez@terryburton.co.uk> >>
+Copyright © 2004-2010 Terry Burton C<< <tez@terryburton.co.uk> >>
 
 Permission is hereby granted, free of charge, to any
 person obtaining a copy of this software and associated
