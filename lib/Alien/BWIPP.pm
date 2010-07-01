@@ -84,8 +84,13 @@ sub create_classes {
         for my $renderer (split q{ }, $chunks{ENCODER}{$encoder}{RNDR}) {
             $prepended .= $chunks{RENDERER}{$renderer}{post_script_source_code};
         }
-        $chunks{ENCODER}{$encoder}{post_script_source_code}
-          = $prepended . $chunks{ENCODER}{$encoder}{post_script_source_code};
+        for my $dependency_type (qw(REQUIRES SUGGESTS)) {
+            if (exists $chunks{ENCODER}{$encoder}{$dependency_type}) {
+                for my $dependency (split q{ }, $chunks{ENCODER}{$encoder}{$dependency_type}) {
+                    $prepended .= $chunks{ENCODER}{$dependency}{post_script_source_code};
+                }
+            }
+        }
 
         my $class_name = $self->meta->name . q{::} . $encoder;
         my $meta_class = Moose::Meta::Class->create($class_name,
@@ -93,6 +98,8 @@ sub create_classes {
         for my $attribute_name (keys %{$chunks{ENCODER}{$encoder}}) {
             my $attribute_value = $chunks{ENCODER}{$encoder}{$attribute_name};
             $attribute_value = dclone($attribute_value) if ref $attribute_value;
+            $attribute_value = $prepended . $attribute_value
+                if 'post_script_source_code' eq $attribute_name;
             $meta_class->add_attribute($attribute_name =>
                   (is => 'ro', default => sub {return $attribute_value;},));
         }
