@@ -11,7 +11,7 @@ use Moose qw(has);
 use MooseX::ClassAttribute qw(class_has);
 use Storable qw(dclone);
 
-our $VERSION = '0.005';
+our $VERSION = '0.006';
 
 has 'barcode_source_handle' => (
     is      => 'rw',
@@ -127,7 +127,7 @@ Alien::BWIPP - Barcode Writer in Pure PostScript
 
 =head1 VERSION
 
-This document describes C<Alien::BWIPP> version C<0.005>. It is based on
+This document describes C<Alien::BWIPP> version C<0.006>. It is based on
 I<Barcode Writer in Pure PostScript> version C<2010-06-20>.
 
 
@@ -296,7 +296,7 @@ IN THE SOFTWARE.
 
 =head2 All other files
 
-Copyright © 2004-2009 Lars Dɪᴇᴄᴋᴏᴡ C<< <daxim@cpan.org> >>
+Copyright © 2010 Lars Dɪᴇᴄᴋᴏᴡ C<< <daxim@cpan.org> >>
 
 Distributable under the same licence.
 

@@ -1,6 +1,6 @@
 =encoding UTF-8
 
-Alien-BWIPP version 0.005 is Copyright © 2009, Lars Dɪᴇᴄᴋᴏᴡ
+Alien-BWIPP version 0.006 is Copyright © 2010, Lars Dɪᴇᴄᴋᴏᴡ
 
 =head1 NAME
 
@@ -79,6 +79,6 @@ IN THE SOFTWARE.
 
 =head2 All other files
 
-Copyright © 2009 Lars Dɪᴇᴄᴋᴏᴡ C<< <daxim@cpan.org> >>
+Copyright © 2010 Lars Dɪᴇᴄᴋᴏᴡ C<< <daxim@cpan.org> >>
 
 Distributable under the same licence.

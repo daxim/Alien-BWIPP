@@ -4,6 +4,20 @@
 
 Changes - Revision history for Alien-BWIPP
 
+=head2 0.006  2010-07-01
+
+=over
+
+=item upgrade to barcode writer version 2010-06-20, see upstream changes file
+L<http://postscriptbarcode.googlecode.com/svn/trunk/CHANGES>
+
+=item remove undocumented metrics feature, its intent is now handled downstream
+in a better way
+
+=item dependencies are handled for all barcode types
+
+=back
+
 =head2 0.005  2010-01-13
 
 0.003 broke 5.10.1, change work-around to work on both 5.10.0 and 5.10.1
